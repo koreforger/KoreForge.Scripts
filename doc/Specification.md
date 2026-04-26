@@ -569,7 +569,7 @@ Done.
 
 MinVer with tag prefix `KoreForge.Scripts/v`. Example: `KoreForge.Scripts/v0.0.1-alpha`.
 
-### 9.3 Build Scripts (bin/)
+### 9.3 Build Scripts (scr/)
 
 Following existing KoreForge convention:
 

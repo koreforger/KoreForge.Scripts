@@ -1,0 +1,13 @@
+# .gitignore for KoreForge.Scripts
+artifacts/
+out/
+**/bin/
+!/bin/
+**/obj/
+*.user
+.vs/
+.idea/
+*.suo
+*.DS_Store
+TestResults/
+coverage-report/

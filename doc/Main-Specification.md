@@ -66,18 +66,19 @@ Four projects work together to deliver this capability:
 
 ## 3. Project Inventory
 
-| # | Project | Type | Location | Description |
-|---|---------|------|----------|-------------|
-| 1 | **KoreForge.Scripts** | lib (nuget) | `KoreForge.Scripts/` | Versioned script registry — storage, history, rollback, validation, polling, ASP.NET endpoints, CLI |
-| 2 | **KF.Vue.Scripts** | weblib (npm) | `KF.Vue.Scripts/` | Themeable Vue 3 component library — script editor, history viewer, tester, rollback dialog |
-| 3 | **KafkaProcessor Dashboard** | web (app) | `apps/KafkaProcessor/dashboard/` | Application-specific SPA — functions, scripts, shadow testing, settings, metrics |
-| 4 | **KafkaProcessor Scripts API** | app | `apps/KafkaProcessor/` | Backend extensions — controllers, hubs, shadow test service, script reload, function-script assignments |
+| # | Project | Type | Repo | Location | Description |
+|---|---------|------|------|----------|-------------|
+| 1 | **KoreForge.Scripts** | lib (nuget/koreforge) | `koreforger/KoreForge.Scripts` | `KoreForge.Scripts/` | Versioned script registry — storage, history, rollback, validation, polling, ASP.NET endpoints, CLI |
+| 2 | **KoreForge.Vue.Scripts** | weblib (npm/koreforge) | `koreforger/KoreForge.Vue.Scripts` | `KoreForge.Vue.Scripts/` | Themeable Vue 3 component library — script editor, history viewer, tester, rollback dialog |
+| 3 | **KafkaProcessor.Dashboard** | web (kafkaprocessor) | `koreforger/KafkaProcessor.Dashboard` | `KafkaProcessor.Dashboard/` | Application-specific SPA — functions, scripts, shadow testing, settings, metrics |
+| 4 | **KafkaProcessor.Scripts.API** | app (kafkaprocessor) | `koreforger/KafkaProcessor.Scripts.API` | `KafkaProcessor.Scripts.API/` | Backend library — controllers, hubs, shadow test service, script reload, function-script assignments |
 
 ### Boundary Rules
 
 - **KoreForge.Scripts** knows about scripts. It does NOT know about functions, rules, Kafka, or any application domain.
-- **KF.Vue.Scripts** knows about script editing, history, and testing. It does NOT know about functions, rules, or shadow testing.
-- **KafkaProcessor** knows about functions, rules, Kafka, shadow testing. It uses KoreForge.Scripts for storage and KF.Vue.Scripts for UI components.
+- **KoreForge.Vue.Scripts** knows about script editing, history, and testing. It does NOT know about functions, rules, or shadow testing.
+- **KafkaProcessor.Scripts.API** knows about functions, rules, shadow testing. It uses KoreForge.Scripts for storage.
+- **KafkaProcessor.Dashboard** uses KoreForge.Vue.Scripts for UI components and calls KafkaProcessor.Scripts.API endpoints.
 
 The test: if it says "script", it's KoreForge. If it says "function", "rule", or "shadow", it's KafkaProcessor.
 
@@ -413,77 +414,95 @@ KoreForge.Metrics instrumentation for:
 ## 11. File Structure Summary
 
 ```
-KoreForge/
-├── KoreForge.Scripts/                          ← NEW: lib (nuget/koreforge)
-│   ├── KoreForge.Scripts.sln
+KoreForge/                                       (workspace root)
+│
+├── KoreForge.Scripts/                           ← repo: koreforger/KoreForge.Scripts
+│   ├── KoreForge.Scripts.sln                       lib (nuget/koreforge)
 │   ├── Directory.Build.props
 │   ├── Directory.Packages.props
 │   ├── coverlet.runsettings
 │   ├── LICENSE.md
 │   ├── README.md
 │   ├── src/
-│   │   ├── KF.Scripts/                         [Bundler package]
-│   │   ├── KF.Scripts.Abstractions/            [Interfaces, models]
-│   │   ├── KF.Scripts.Core/                    [Services]
-│   │   ├── KF.Scripts.Data/                    [SQL implementation]
-│   │   ├── KF.Scripts.AspNet/                  [ASP.NET endpoints]
-│   │   └── KF.Scripts.Cli/                     [CLI tool]
+│   │   ├── KF.Scripts/                          [Bundler package]
+│   │   ├── KF.Scripts.Abstractions/             [Interfaces, models]
+│   │   ├── KF.Scripts.Core/                     [Services]
+│   │   ├── KF.Scripts.Data/                     [SQL implementation]
+│   │   ├── KF.Scripts.AspNet/                   [ASP.NET endpoints]
+│   │   └── KF.Scripts.Cli/                      [CLI tool]
 │   ├── tst/
 │   │   ├── KF.Scripts.Tests/
 │   │   └── KF.Scripts.Benchmarks/
-│   ├── bin/                                    [Build/test/publish scripts]
+│   ├── scr/                                     [Build/test/publish scripts]
 │   ├── doc/
-│   │   ├── Specification.md                    [Library spec]
-│   │   └── Main-Specification.md               [THIS DOCUMENT]
-│   └── artifacts/                              [NuGet output]
+│   │   ├── Specification.md                     [Library spec]
+│   │   └── Main-Specification.md                [THIS DOCUMENT]
+│   └── artifacts/                               [NuGet output]
 │
-├── KF.Vue.Scripts/                             ← NEW: weblib (npm/koreforge)
-│   ├── package.json
+├── KoreForge.Vue.Scripts/                       ← repo: koreforger/KoreForge.Vue.Scripts
+│   ├── package.json                                weblib (npm/koreforge)
 │   ├── tsconfig.json
 │   ├── vite.config.ts
 │   ├── LICENSE.md
 │   ├── README.md
 │   ├── src/
 │   │   ├── index.ts
-│   │   ├── composables/                        [Headless logic]
-│   │   ├── components/                         [Themed Vue components]
-│   │   ├── theme/                              [CSS custom properties]
-│   │   └── types/                              [TypeScript definitions]
+│   │   ├── composables/                         [Headless logic]
+│   │   ├── components/                          [Themed Vue components]
+│   │   ├── theme/                               [CSS custom properties]
+│   │   └── types/                               [TypeScript definitions]
 │   ├── doc/
 │   │   └── Specification.md
 │   └── scripts/
 │
+├── KafkaProcessor.Scripts.API/                  ← repo: koreforger/KafkaProcessor.Scripts.API
+│   ├── KafkaProcessor.Scripts.API.sln              app (kafkaprocessor)
+│   ├── Directory.Build.props
+│   ├── README.md
+│   ├── src/
+│   │   └── KafkaProcessor.Scripts.API/
+│   │       ├── Controllers/                     [FunctionsController, ShadowTestController]
+│   │       ├── Hubs/                            [ShadowTestHub]
+│   │       ├── Services/                        [ScriptReload, ShadowTest, FunctionScriptRepo]
+│   │       └── Models/                          [DTOs, junction models]
+│   ├── tst/
+│   │   └── KafkaProcessor.Scripts.API.Tests/
+│   ├── scr/                                     [Build/test scripts]
+│   ├── doc/
+│   │   └── Specification.md
+│   └── artifacts/
+│
+├── KafkaProcessor.Dashboard/                    ← repo: koreforger/KafkaProcessor.Dashboard
+│   ├── package.json                                web (kafkaprocessor)
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── index.html
+│   ├── src/
+│   │   ├── App.vue
+│   │   ├── main.ts
+│   │   ├── router.ts
+│   │   ├── composables/                         [useFunctions, useShadowTest, useMetrics, useSettings]
+│   │   ├── components/                          [App-specific components]
+│   │   └── views/                               [Route views]
+│   └── doc/
+│       └── Specification.md
+│
 ├── apps/
-│   └── KafkaProcessor/
-│       ├── src/KafkaProcessor/                  ← EXTENDED: app (kafkaprocessor)
-│       │   ├── Controllers/                     [NEW: FunctionsController, ShadowTestController]
-│       │   ├── Hubs/                            [NEW: MetricsHub, SettingsHub, ShadowTestHub]
-│       │   ├── Services/                        [EXTENDED: ScriptReload, ShadowTest, FunctionScriptRepo]
+│   └── KafkaProcessor/                          ← existing: consumes above packages
+│       ├── src/KafkaProcessor/
+│       │   ├── Program.cs                       [Wires everything together]
 │       │   └── ...existing pipeline code...
-│       ├── dashboard/                           ← NEW: web (kafkaprocessor)
-│       │   ├── package.json
-│       │   ├── vite.config.ts
-│       │   ├── tsconfig.json
-│       │   ├── index.html
-│       │   ├── src/
-│       │   │   ├── App.vue
-│       │   │   ├── main.ts
-│       │   │   ├── router.ts
-│       │   │   ├── composables/                 [App-specific: useFunctions, useShadowTest, etc.]
-│       │   │   ├── components/                  [App-specific components]
-│       │   │   └── views/                       [Route views]
-│       │   └── doc/
-│       │       └── Specification.md
 │       └── doc/
-│           └── Scripts-API-Specification.md     [Backend API spec]
+│           └── Scripts-API-Specification.md     [Backend integration spec]
 ```
 
 ## 12. Specifications Index
 
 | Document | Location | Scope |
 |----------|----------|-------|
-| **Main Specification** (this document) | [KoreForge.Scripts/doc/Main-Specification.md](../../KoreForge.Scripts/doc/Main-Specification.md) | Cross-project architecture, data flows, implementation order |
-| **KoreForge.Scripts Spec** | [KoreForge.Scripts/doc/Specification.md](../../KoreForge.Scripts/doc/Specification.md) | Library: schema, interfaces, services, CLI, build/packaging |
-| **KF.Vue.Scripts Spec** | [KF.Vue.Scripts/doc/Specification.md](../../KF.Vue.Scripts/doc/Specification.md) | NPM package: composables, components, theming, build |
-| **Dashboard Spec** | [apps/KafkaProcessor/dashboard/doc/Specification.md](../../apps/KafkaProcessor/dashboard/doc/Specification.md) | SPA: views, routes, layout, data sources |
-| **Scripts API Spec** | [apps/KafkaProcessor/doc/Scripts-API-Specification.md](../../apps/KafkaProcessor/doc/Scripts-API-Specification.md) | Backend: endpoints, hubs, services, migration |
+| **Main Specification** (this document) | [KoreForge.Scripts/doc/Main-Specification.md](Main-Specification.md) | Cross-project architecture, data flows, implementation order |
+| **KoreForge.Scripts Spec** | [KoreForge.Scripts/doc/Specification.md](Specification.md) | Library: schema, interfaces, services, CLI, build/packaging |
+| **KoreForge.Vue.Scripts Spec** | [KoreForge.Vue.Scripts/doc/Specification.md](../../KoreForge.Vue.Scripts/doc/Specification.md) | NPM package: composables, components, theming, build |
+| **KafkaProcessor.Dashboard Spec** | [KafkaProcessor.Dashboard/doc/Specification.md](../../KafkaProcessor.Dashboard/doc/Specification.md) | SPA: views, routes, layout, data sources |
+| **KafkaProcessor.Scripts.API Spec** | [KafkaProcessor.Scripts.API/doc/Specification.md](../../KafkaProcessor.Scripts.API/doc/Specification.md) | Backend: endpoints, hubs, services, migration |
+| **Integration Spec** | [apps/KafkaProcessor/doc/Scripts-API-Specification.md](../../apps/KafkaProcessor/doc/Scripts-API-Specification.md) | How KafkaProcessor wires everything together |

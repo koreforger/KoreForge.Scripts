@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>KoreForge.Scripts.AspNet</PackageId>
+    <AssemblyName>KF.Scripts.AspNet</AssemblyName>
+    <RootNamespace>KF.Scripts.AspNet</RootNamespace>
+    <Description>ASP.NET Core minimal API endpoints for KoreForge script registry.</Description>
+    <PackageTags>scripts;registry;aspnet;api</PackageTags>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KF.Scripts.Abstractions\KF.Scripts.Abstractions.csproj" />
+    <ProjectReference Include="..\KF.Scripts.Core\KF.Scripts.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>KF.Scripts.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>
