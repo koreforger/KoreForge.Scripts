@@ -417,7 +417,7 @@ KoreForge.Metrics instrumentation for:
 KoreForge/                                       (workspace root)
 │
 ├── KoreForge.Scripts/                           ← repo: koreforger/KoreForge.Scripts
-│   ├── KoreForge.Scripts.sln                       lib (nuget/koreforge)
+│   ├── KoreForge.Scripts.slnx                       lib (nuget/koreforge)
 │   ├── Directory.Build.props
 │   ├── Directory.Packages.props
 │   ├── coverlet.runsettings
@@ -456,7 +456,7 @@ KoreForge/                                       (workspace root)
 │   └── scripts/
 │
 ├── KafkaProcessor.Scripts.API/                  ← repo: koreforger/KafkaProcessor.Scripts.API
-│   ├── KafkaProcessor.Scripts.API.sln              app (kafkaprocessor)
+│   ├── KafkaProcessor.Scripts.API.slnx              app (kafkaprocessor)
 │   ├── Directory.Build.props
 │   ├── README.md
 │   ├── src/

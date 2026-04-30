@@ -14,7 +14,7 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 
 | # | Task | Details |
 |---|------|---------|
-| 1 | Create `KoreForge.Scripts.sln` | Solution with `src/` and `tst/` solution folders |
+| 1 | Create `KoreForge.Scripts.slnx` | Solution with `src/` and `tst/` solution folders |
 | 2 | Create `Directory.Build.props` | Product=KoreForge.Scripts, Authors=KoreForge, Company=KoreForge, RepositoryUrl, MinVerTagPrefix=`Scripts/v`, MinVerAutoIncrement=minor, MinVerDefaultPreReleaseIdentifiers=alpha.0, TreatWarningsAsErrors=true, Nullable=enable, ImplicitUsings=enable, GenerateDocumentationFile=true, LangVersion=latest, PackageOutputPath=artifacts/ |
 | 3 | Create `Directory.Packages.props` | ManagePackageVersionsCentrally=true. Pin: MinVer 6.0.0, Microsoft.Data.SqlClient 6.0.0, Microsoft.Extensions.* 10.0.0, Microsoft.AspNetCore.* 10.0.0, xunit 2.9.3, xunit.runner.visualstudio 3.0.2, coverlet.collector 6.0.4, FluentAssertions 8.0.0, Moq 4.20.72, BenchmarkDotNet 0.15.8, System.CommandLine 2.0.0-beta4 |
 | 4 | Create `coverlet.runsettings` | Format=cobertura, Exclude=[*.Tests]*,[*.Benchmarks]*,[*.Sample]*, ExcludeByAttribute=GeneratedCodeAttribute,CompilerGeneratedAttribute |
@@ -119,7 +119,7 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 
 | # | Script | Details |
 |---|--------|---------|
-| 1 | `build-test.ps1` | `dotnet build KoreForge.Scripts.sln -c $Configuration; dotnet test KoreForge.Scripts.sln -c $Configuration --no-build` |
+| 1 | `build-test.ps1` | `dotnet build KoreForge.Scripts.slnx -c $Configuration; dotnet test KoreForge.Scripts.slnx -c $Configuration --no-build` |
 | 2 | `build-test-codecoverage.ps1` | Build → test with coverlet → reportgenerator HTML report to `out/TestResults/coverage/` |
 | 3 | `build-rebuild.ps1` | `dotnet build --force -c $Configuration` |
 | 4 | `build-benchmark.ps1` | `dotnet run --project tst/KF.Scripts.Benchmarks -c Release -- --filter *` |
@@ -150,7 +150,7 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 
 | # | Task | Details |
 |---|------|---------|
-| 1 | Create `KafkaProcessor.Scripts.API.sln` | Solution with src/ and tst/ folders |
+| 1 | Create `KafkaProcessor.Scripts.API.slnx` | Solution with src/ and tst/ folders |
 | 2 | Create `Directory.Build.props` | Product=KafkaProcessor.Scripts.API, RepositoryUrl, MinVerTagPrefix=`KafkaProcessor.Scripts.API/v`, TreatWarningsAsErrors, Nullable, ImplicitUsings, GenerateDocumentationFile |
 | 3 | Create `Directory.Packages.props` | Pin: KoreForge.Scripts 0.0.1-alpha, KoreForge.Jex 0.0.2-alpha, Microsoft.AspNetCore.SignalR.* 10.0.0, Microsoft.Extensions.* 10.0.0, + test deps |
 | 4 | Create `coverlet.runsettings` | Same pattern as KoreForge libraries |
