@@ -32,7 +32,7 @@ jobs:
         run: dotnet test KoreForge.Scripts.slnx -c Release --no-build
 
       - name: Pack
-        run: dotnet pack KoreForge.Scripts.slnx -c Release --no-build -o artifacts/
+        run: dotnet pack KoreForge.Scripts.slnx -c Release -o artifacts/
 
       - name: Push to NuGet.org
         run: |
