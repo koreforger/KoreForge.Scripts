@@ -124,7 +124,7 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 | 3 | `build-rebuild.ps1` | `dotnet build --force -c $Configuration` |
 | 4 | `build-benchmark.ps1` | `dotnet run --project tst/KF.Scripts.Benchmarks -c Release -- --filter *` |
 | 5 | `git-push.ps1` | `git add -A; git commit; git push` |
-| 6 | `git-push-nuget.ps1` | Tag `Scripts/v$Version` → push tag → triggers CI/NuGet publish |
+| 6 | `release-nuget-from-github.ps1` | Tag `KoreForge.Scripts/v$Version` → push tag → triggers CI/NuGet publish |
 
 ### Step 1.10 — Validation & Ship
 
@@ -282,10 +282,10 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 
 | # | Script | File | Details |
 |---|--------|------|---------|
-| 1 | Build | `scripts/build.ps1` | `npm run build` (Vite library mode) |
-| 2 | Test | `scripts/test.ps1` | `npm run test` (Vitest) |
+| 1 | Build | `scr/build-rebuild.ps1` | `npm run build` (Vite library mode) |
+| 2 | Test | `scr/build-test.ps1` | `npm run test` (Vitest) |
 | 3 | Lint | `scripts/lint.ps1` | `npm run lint` |
-| 4 | Publish | `scripts/publish.ps1` | `npm version $Version; npm publish --access public` |
+| 4 | Publish | `scr/release-nuget-from-local.ps1` | `npm version $Version; npm publish --access public` |
 
 ### Step 3.9 — Validation & Ship
 
@@ -365,7 +365,7 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 | # | Script | File | Details |
 |---|--------|------|---------|
 | 1 | Dev | `scripts/dev.ps1` | `npm run dev` |
-| 2 | Build | `scripts/build.ps1` | `npm run build` → dist/ |
+| 2 | Build | `scr/build-rebuild.ps1` | `npm run build` → dist/ |
 | 3 | Type check | In package.json | `vue-tsc -b` |
 
 ### Step 4.7 — Validation
@@ -462,3 +462,5 @@ Phase 5: Integration into KafkaProcessor
 ```
 
 Phase 2 and Phase 3 can run in **parallel** — they have no dependency on each other. Phase 2 depends on Phase 1 (NuGet). Phase 4 depends on both Phase 2 (backend running) and Phase 3 (NPM package). Phase 5 depends on all prior phases.
+
+
