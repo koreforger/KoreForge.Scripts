@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="src/KF.Scripts.Abstractions/KF.Scripts.Abstractions.csproj" />
+  <Project Path="src/KF.Scripts.AspNet/KF.Scripts.AspNet.csproj" />
+  <Project Path="src/KF.Scripts.Cli/KF.Scripts.Cli.csproj" />
+  <Project Path="src/KF.Scripts.Core/KF.Scripts.Core.csproj" />
+  <Project Path="src/KF.Scripts.Data/KF.Scripts.Data.csproj" />
+  <Project Path="src/KF.Scripts/KF.Scripts.csproj" />
+  <Project Path="tst/KF.Scripts.Tests/KF.Scripts.Tests.csproj" />
+</Solution>

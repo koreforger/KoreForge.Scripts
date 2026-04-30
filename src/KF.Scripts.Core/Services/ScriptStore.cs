@@ -4,6 +4,7 @@ using KF.Scripts.Exceptions;
 using KF.Scripts.Interfaces;
 using KF.Scripts.Models;
 using KF.Scripts.Options;
+using KF.Time;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -15,17 +16,20 @@ public sealed class ScriptStore : IScriptStore
     private readonly ScriptStoreOptions _options;
     private readonly IEnumerable<IScriptCompiler> _compilers;
     private readonly ILogger<ScriptStore> _logger;
+    private readonly ISystemClock _clock;
 
     public ScriptStore(
         IDbContextFactory<KFScriptsDbContext> factory,
         ScriptStoreOptions options,
         IEnumerable<IScriptCompiler> compilers,
-        ILogger<ScriptStore> logger)
+        ILogger<ScriptStore> logger,
+        ISystemClock clock)
     {
         _factory = factory;
         _options = options;
         _compilers = compilers;
         _logger = logger;
+        _clock = clock;
     }
 
     public async Task<IReadOnlyList<ScriptRecord>> ListAsync(string? typeTag = null, bool? isEnabled = null, CancellationToken ct = default)
@@ -81,7 +85,7 @@ public sealed class ScriptStore : IScriptStore
         }
 
         await using var db = await _factory.CreateDbContextAsync(ct);
-        var now = DateTime.UtcNow;
+        var now = _clock.UtcNow.UtcDateTime;
         var entity = new ScriptEntity
         {
             ApplicationId = appId,
@@ -156,7 +160,7 @@ public sealed class ScriptStore : IScriptStore
             entity.IsEnabled = request.IsEnabled.Value;
 
         entity.ModifiedBy = request.ModifiedBy;
-        entity.ModifiedDate = DateTime.UtcNow;
+        entity.ModifiedDate = _clock.UtcNow.UtcDateTime;
         entity.Comment = request.Comment;
 
         await db.SaveChangesAsync(ct);
@@ -211,7 +215,7 @@ public sealed class ScriptStore : IScriptStore
             OldIsEnabled = oldIsEnabled,
             RowVersionBefore = beforeRv,
             ChangedBy = changedBy,
-            ChangedDate = DateTime.UtcNow,
+            ChangedDate = _clock.UtcNow.UtcDateTime,
             Operation = nameof(ScriptOperation.Delete),
             Comment = null
         });

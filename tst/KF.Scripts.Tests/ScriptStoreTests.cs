@@ -4,6 +4,7 @@ using KF.Scripts.Exceptions;
 using KF.Scripts.Interfaces;
 using KF.Scripts.Models;
 using KF.Scripts.Options;
+using KF.Time;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace KF.Scripts.Tests;
@@ -20,7 +21,7 @@ public sealed class ScriptStoreTests
     {
         var factory = TestDbFactory.CreateInMemory(dbName);
         IScriptCompiler[] compilers = [new PassThroughCompiler()];
-        return new ScriptStore(factory, _options, compilers, NullLogger<ScriptStore>.Instance);
+        return new ScriptStore(factory, _options, compilers, NullLogger<ScriptStore>.Instance, UtcSystemClock.Instance);
     }
 
     [Fact]

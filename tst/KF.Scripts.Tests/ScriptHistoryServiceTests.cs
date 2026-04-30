@@ -6,6 +6,7 @@ using KF.Scripts.Exceptions;
 using KF.Scripts.Models;
 using KF.Scripts.Options;
 using Microsoft.EntityFrameworkCore;
+using KF.Time;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace KF.Scripts.Tests;
@@ -23,7 +24,7 @@ public sealed class ScriptHistoryServiceTests
         var dbName = Guid.NewGuid().ToString();
         var factory = TestDbFactory.CreateInMemory(dbName);
         var compilers = new[] { new PassThroughCompiler() };
-        var store = new ScriptStore(factory, _options, compilers, NullLogger<ScriptStore>.Instance);
+        var store = new ScriptStore(factory, _options, compilers, NullLogger<ScriptStore>.Instance, UtcSystemClock.Instance);
         var history = new ScriptHistoryService(factory, store, _options, NullLogger<ScriptHistoryService>.Instance);
         return (store, history, dbName);
     }
