@@ -31,10 +31,10 @@
   </Target>
 
   <ItemGroup>
-    <ProjectReference Include="..\KF.Scripts.Abstractions\KF.Scripts.Abstractions.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\KF.Scripts.Core\KF.Scripts.Core.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\KF.Scripts.Data\KF.Scripts.Data.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\KF.Scripts.AspNet\KF.Scripts.AspNet.csproj" PrivateAssets="all" />
+    <PackageReference Include="KoreForge.Scripts.Abstractions" VersionOverride="1.0.1-alpha" PrivateAssets="all" />
+    <PackageReference Include="KoreForge.Scripts.Core" VersionOverride="1.0.1-alpha" PrivateAssets="all" />
+    <PackageReference Include="KoreForge.Scripts.Data" VersionOverride="1.0.1-alpha" PrivateAssets="all" />
+    <PackageReference Include="KoreForge.Scripts.AspNet" VersionOverride="1.0.1-alpha" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

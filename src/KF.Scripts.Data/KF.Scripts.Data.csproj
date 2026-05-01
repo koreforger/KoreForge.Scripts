@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KF.Scripts.Abstractions\KF.Scripts.Abstractions.csproj" />
+    <PackageReference Include="KoreForge.Scripts.Abstractions" VersionOverride="1.0.1-alpha" />
   </ItemGroup>
 
   <ItemGroup>

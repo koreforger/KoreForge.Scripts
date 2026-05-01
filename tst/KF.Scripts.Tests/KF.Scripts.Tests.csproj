@@ -28,12 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\KF.Scripts.Abstractions\KF.Scripts.Abstractions.csproj" />
-    <ProjectReference Include="..\..\src\KF.Scripts.Core\KF.Scripts.Core.csproj" />
-    <ProjectReference Include="..\..\src\KF.Scripts.Data\KF.Scripts.Data.csproj" />
-    <ProjectReference Include="..\..\src\KF.Scripts.AspNet\KF.Scripts.AspNet.csproj" />
-    <ProjectReference Include="..\..\src\KF.Scripts\KF.Scripts.csproj" />
-    <ProjectReference Include="..\..\src\KF.Scripts.Cli\KF.Scripts.Cli.csproj" />
+    <PackageReference Include="KoreForge.Scripts.Abstractions" VersionOverride="1.0.1-alpha" />
+    <PackageReference Include="KoreForge.Scripts.Core" VersionOverride="1.0.1-alpha" />
+    <PackageReference Include="KoreForge.Scripts.Data" VersionOverride="1.0.1-alpha" />
+    <PackageReference Include="KoreForge.Scripts.AspNet" VersionOverride="1.0.1-alpha" />
+    <PackageReference Include="KoreForge.Scripts" VersionOverride="1.0.1-alpha" />
+    <PackageReference Include="KoreForge.Scripts.Cli" VersionOverride="1.0.1-alpha" />
   </ItemGroup>
 
   <ItemGroup>
