@@ -10,11 +10,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="KoreForge.Scripts.Abstractions" VersionOverride="1.0.2-alpha" />
-    <PackageReference Include="KoreForge.Scripts.Data" VersionOverride="1.0.2-alpha" />
+    <PackageReference Include="KoreForge.Scripts.Abstractions" VersionOverride="1.1.2" />
+    <PackageReference Include="KoreForge.Scripts.Data" VersionOverride="1.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="KoreForge.Time" VersionOverride="1.0.2-alpha" />
+    <PackageReference Include="KoreForge.Time" VersionOverride="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />

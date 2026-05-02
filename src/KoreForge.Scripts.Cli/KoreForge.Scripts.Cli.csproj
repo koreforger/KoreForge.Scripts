@@ -10,6 +10,7 @@
     <Description>CLI tool for KoreForge script registry management.</Description>
     <PackageTags>scripts;registry;cli;tool</PackageTags>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>NU5104</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />
@@ -21,9 +22,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="KoreForge.Scripts.Abstractions" VersionOverride="1.0.2-alpha" />
-    <PackageReference Include="KoreForge.Scripts.Core" VersionOverride="1.0.2-alpha" />
-    <PackageReference Include="KoreForge.Scripts.Data" VersionOverride="1.0.2-alpha" />
+    <PackageReference Include="KoreForge.Scripts.Abstractions" VersionOverride="1.1.2" />
+    <PackageReference Include="KoreForge.Scripts.Core" VersionOverride="1.1.2" />
+    <PackageReference Include="KoreForge.Scripts.Data" VersionOverride="1.1.2" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
