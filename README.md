@@ -34,11 +34,11 @@ app.MapScriptEndpoints();
 ## CLI
 
 ```bash
-kf-scripts list --application MyApp
-kf-scripts upload extract-login --file login.jex --application MyApp
-kf-scripts download extract-login --output login.jex
-kf-scripts history extract-login
-kf-scripts rollback extract-login 0
+koreforge-scripts list --application MyApp
+koreforge-scripts upload extract-login --file login.jex --application MyApp
+koreforge-scripts download extract-login --output login.jex
+koreforge-scripts history extract-login
+koreforge-scripts rollback extract-login 0
 ```
 
 ## License

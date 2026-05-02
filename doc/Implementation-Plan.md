@@ -21,11 +21,11 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 | 5 | Create `LICENSE.md` | MIT license |
 | 6 | Create `.gitignore` | Standard .NET gitignore + artifacts/, out/, TestResults/ |
 
-### Step 1.2 — KF.Scripts.Abstractions
+### Step 1.2 — KoreForge.Scripts.Abstractions
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | Create csproj | `KF.Scripts.Abstractions.csproj` | net10.0, IsPackable=false, RootNamespace=KF.Scripts.Abstractions |
+| 1 | Create csproj | `KoreForge.Scripts.Abstractions.csproj` | net10.0, IsPackable=false, RootNamespace=KoreForge.Scripts.Abstractions |
 | 2 | Models | `Models/ScriptRecord.cs` | sealed record: ScriptId, ApplicationId, Name, TypeTag, Language, Content, Description, IsEnabled, CreatedBy/Date, ModifiedBy/Date, Comment, RowVersion |
 | 3 | Models | `Models/ScriptHistoryRecord.cs` | sealed record: HistoryId, ScriptId, ApplicationId, Name, OldContent, NewContent, OldIsEnabled, NewIsEnabled, RowVersionBefore/After, ChangedBy, ChangedDate, Operation, Comment |
 | 4 | Models | `Models/ScriptOperation.cs` | enum: Insert, Update, Delete, Rollback |
@@ -44,32 +44,32 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 | 17 | Exceptions | `Exceptions/ScriptConcurrencyException.cs` | ScriptId, Name |
 | 18 | Exceptions | `Exceptions/RollbackConflictException.cs` | Name, VersionIndex |
 
-### Step 1.3 — KF.Scripts.Data
+### Step 1.3 — KoreForge.Scripts.Data
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | Create csproj | `KF.Scripts.Data.csproj` | net10.0, IsPackable=false, depends on KF.Scripts.Abstractions + Microsoft.Data.SqlClient |
+| 1 | Create csproj | `KoreForge.Scripts.Data.csproj` | net10.0, IsPackable=false, depends on KoreForge.Scripts.Abstractions + Microsoft.Data.SqlClient |
 | 2 | SQL scripts | `Sql/CreateScriptsTable.sql` | Scripts table DDL (as specified) |
 | 3 | SQL scripts | `Sql/CreateScriptHistoryTable.sql` | ScriptHistory table DDL (as specified) |
 | 4 | Repository | `ScriptDataRepository.cs` | Raw ADO.NET (no EF). Methods: Insert, Update, Delete, GetById, GetByName, List, GetAll. Uses parameterized queries. UPDLOCK for concurrency. |
 | 5 | Repository | `ScriptHistoryDataRepository.cs` | Insert history record, GetByScriptId, GetByName. Ordered by ChangedDate DESC. |
 
-### Step 1.4 — KF.Scripts.Core
+### Step 1.4 — KoreForge.Scripts.Core
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | Create csproj | `KF.Scripts.Core.csproj` | net10.0, IsPackable=false, depends on Abstractions + Data + Microsoft.Extensions.Hosting + Microsoft.Extensions.Options + Microsoft.Extensions.DependencyInjection.Abstractions |
+| 1 | Create csproj | `KoreForge.Scripts.Core.csproj` | net10.0, IsPackable=false, depends on Abstractions + Data + Microsoft.Extensions.Hosting + Microsoft.Extensions.Options + Microsoft.Extensions.DependencyInjection.Abstractions |
 | 2 | Service | `Services/ScriptStore.cs` | Implements IScriptStore. Create: validate → resolve IScriptCompiler by language → compile → insert → history. Update: UPDLOCK + RowVersion check → compile → update → history. Delete: UPDLOCK → delete → history. |
 | 3 | Service | `Services/ScriptHistoryService.cs` | Implements IScriptHistoryService. GetHistory: delegate to data repo. Rollback: fetch history → validate index → check RowVersion conflict → compile restored content → update → history (Operation=Rollback). |
 | 4 | Service | `Services/ScriptValidator.cs` | Implements IScriptValidator. Resolves IScriptCompiler by language from DI (keyed services). Delegates CompileAsync. |
 | 5 | Service | `Services/ScriptChangeMonitor.cs` | Implements IScriptChangeNotification + IHostedService. Poll loop: load all scripts for ApplicationId → compare RowVersion dictionary → fire ScriptsChanged event on delta. Sleep PollingInterval. Error → log + continue. |
 | 6 | DI | `ServiceCollectionExtensions.cs` | AddKoreForgeScripts(Action<ScriptStoreOptions>), AddScriptCompiler<T>(language) using keyed services |
 
-### Step 1.5 — KF.Scripts.AspNet
+### Step 1.5 — KoreForge.Scripts.AspNet
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | Create csproj | `KF.Scripts.AspNet.csproj` | net10.0, IsPackable=false, depends on Core + Microsoft.AspNetCore.App (framework ref) |
+| 1 | Create csproj | `KoreForge.Scripts.AspNet.csproj` | net10.0, IsPackable=false, depends on Core + Microsoft.AspNetCore.App (framework ref) |
 | 2 | Endpoints | `ScriptEndpoints.cs` | MapScriptEndpoints() extension. Minimal API handlers for: GET / (list), GET /{id} (get), GET /by-name/{name}, POST / (create), PUT /{id} (update), DELETE /{id}, GET /{id}/history, POST /by-name/{name}/rollback, POST /validate, POST /{id}/test |
 | 3 | DTOs | `Dtos/CreateScriptDto.cs` | Request body DTOs (camelCase). Maps to CreateScriptRequest. |
 | 4 | DTOs | `Dtos/UpdateScriptDto.cs` | Request body DTO with rowVersion as base64 string |
@@ -77,35 +77,35 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 | 6 | DTOs | `Dtos/TestScriptResultDto.cs` | { success, output, diagnostics, executionTimeMs } |
 | 7 | Error handling | `ScriptProblemDetails.cs` | Maps exceptions to Problem Details (400/409) |
 
-### Step 1.6 — KF.Scripts (Bundler)
+### Step 1.6 — KoreForge.Scripts (Bundler)
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | Create csproj | `KF.Scripts.csproj` | PackageId=KoreForge.Scripts, IncludeBuildOutput=false, TargetsForTfmSpecificBuildOutput bundles all 4 DLLs + XMLs. Same bundling pattern as KoreForge.Settings and KoreForge.Processing. |
+| 1 | Create csproj | `KoreForge.Scripts.csproj` | PackageId=KoreForge.Scripts, IncludeBuildOutput=false, TargetsForTfmSpecificBuildOutput bundles all 4 DLLs + XMLs. Same bundling pattern as KoreForge.Settings and KoreForge.Processing. |
 
-### Step 1.7 — KF.Scripts.Cli
+### Step 1.7 — KoreForge.Scripts.Cli
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | Create csproj | `KF.Scripts.Cli.csproj` | OutputType=Exe, PackAsTool=true, ToolCommandName=kf-scripts, depends on Core |
+| 1 | Create csproj | `KoreForge.Scripts.Cli.csproj` | OutputType=Exe, PackAsTool=true, ToolCommandName=koreforge-scripts, depends on Core |
 | 2 | Program | `Program.cs` | System.CommandLine root command with global options: --connection, --application, --format |
-| 3 | Commands | `Commands/ListCommand.cs` | `kf-scripts list [--type] [--enabled]` → tabular output |
-| 4 | Commands | `Commands/GetCommand.cs` | `kf-scripts get <id>` → JSON output |
-| 5 | Commands | `Commands/DownloadCommand.cs` | `kf-scripts download <name> [--output file.jex]` → file or stdout |
-| 6 | Commands | `Commands/UploadCommand.cs` | `kf-scripts upload <name> --file <path> --type <tag>` → validate + create/update |
-| 7 | Commands | `Commands/CreateCommand.cs` | `kf-scripts create <name> --file <path> --type <tag>` → create only |
-| 8 | Commands | `Commands/DeleteCommand.cs` | `kf-scripts delete <id> --rowversion <hex>` |
-| 9 | Commands | `Commands/HistoryCommand.cs` | `kf-scripts history <name>` → table of versions |
-| 10 | Commands | `Commands/RollbackCommand.cs` | `kf-scripts rollback <name> <versionIndex>` |
-| 11 | Commands | `Commands/ValidateCommand.cs` | `kf-scripts validate --file <path>` → compile check |
-| 12 | Commands | `Commands/ExportCommand.cs` | `kf-scripts export --output <file> [--type]` → JSON |
-| 13 | Commands | `Commands/ImportCommand.cs` | `kf-scripts import --file <path> [--apply] [--upsert]` |
+| 3 | Commands | `Commands/ListCommand.cs` | `koreforge-scripts list [--type] [--enabled]` → tabular output |
+| 4 | Commands | `Commands/GetCommand.cs` | `koreforge-scripts get <id>` → JSON output |
+| 5 | Commands | `Commands/DownloadCommand.cs` | `koreforge-scripts download <name> [--output file.jex]` → file or stdout |
+| 6 | Commands | `Commands/UploadCommand.cs` | `koreforge-scripts upload <name> --file <path> --type <tag>` → validate + create/update |
+| 7 | Commands | `Commands/CreateCommand.cs` | `koreforge-scripts create <name> --file <path> --type <tag>` → create only |
+| 8 | Commands | `Commands/DeleteCommand.cs` | `koreforge-scripts delete <id> --rowversion <hex>` |
+| 9 | Commands | `Commands/HistoryCommand.cs` | `koreforge-scripts history <name>` → table of versions |
+| 10 | Commands | `Commands/RollbackCommand.cs` | `koreforge-scripts rollback <name> <versionIndex>` |
+| 11 | Commands | `Commands/ValidateCommand.cs` | `koreforge-scripts validate --file <path>` → compile check |
+| 12 | Commands | `Commands/ExportCommand.cs` | `koreforge-scripts export --output <file> [--type]` → JSON |
+| 13 | Commands | `Commands/ImportCommand.cs` | `koreforge-scripts import --file <path> [--apply] [--upsert]` |
 
-### Step 1.8 — KF.Scripts.Tests
+### Step 1.8 — KoreForge.Scripts.Tests
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | Create csproj | `KF.Scripts.Tests.csproj` | IsPackable=false, IsTestProject=true, depends on Core + AspNet + xunit + FluentAssertions + Moq + coverlet |
+| 1 | Create csproj | `KoreForge.Scripts.Tests.csproj` | IsPackable=false, IsTestProject=true, depends on Core + AspNet + xunit + FluentAssertions + Moq + coverlet |
 | 2 | Tests | `ScriptStoreTests.cs` | Create (happy), Create with compilation error (rejected), Update (happy), Update with wrong RowVersion (409), Delete (happy). Mock IScriptCompiler, mock data repos. |
 | 3 | Tests | `ScriptHistoryServiceTests.cs` | GetHistory (returns ordered list), Rollback (happy), Rollback with conflict (throws), Rollback out of range (throws). |
 | 4 | Tests | `ScriptChangeMonitorTests.cs` | Detect added script, detect changed script, detect deleted script, no change = no event. Using fake timers. |
@@ -122,7 +122,7 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 | 1 | `build-test.ps1` | `dotnet build KoreForge.Scripts.slnx -c $Configuration; dotnet test KoreForge.Scripts.slnx -c $Configuration --no-build` |
 | 2 | `build-test-codecoverage.ps1` | Build → test with coverlet → reportgenerator HTML report to `out/TestResults/coverage/` |
 | 3 | `build-rebuild.ps1` | `dotnet build --force -c $Configuration` |
-| 4 | `build-benchmark.ps1` | `dotnet run --project tst/KF.Scripts.Benchmarks -c Release -- --filter *` |
+| 4 | `build-benchmark.ps1` | `dotnet run --project tst/KoreForge.Scripts.Benchmarks -c Release -- --filter *` |
 | 5 | `git-push.ps1` | `git add -A; git commit; git push` |
 | 6 | `release-nuget-from-github.ps1` | Tag `KoreForge.Scripts/v$Version` → push tag → triggers CI/NuGet publish |
 
@@ -132,9 +132,9 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 |---|------|---------|
 | 1 | Run all tests | `scr/build-test.ps1` — all green |
 | 2 | Run coverage | `scr/build-test-codecoverage.ps1` — verify 70%+ |
-| 3 | Pack NuGet | `dotnet pack src/KF.Scripts/KF.Scripts.csproj -c Release` → artifacts/KoreForge.Scripts.0.0.1-alpha.nupkg |
-| 4 | Pack CLI tool | `dotnet pack src/KF.Scripts.Cli/KF.Scripts.Cli.csproj -c Release` → artifacts/KoreForge.Scripts.Cli.0.0.1-alpha.nupkg |
-| 5 | Test CLI locally | `dotnet tool install --global --add-source artifacts KoreForge.Scripts.Cli` → `kf-scripts list --connection "..." --application Test` |
+| 3 | Pack NuGet | `dotnet pack src/KoreForge.Scripts/KoreForge.Scripts.csproj -c Release` → artifacts/KoreForge.Scripts.0.0.1-alpha.nupkg |
+| 4 | Pack CLI tool | `dotnet pack src/KoreForge.Scripts.Cli/KoreForge.Scripts.Cli.csproj -c Release` → artifacts/KoreForge.Scripts.Cli.0.0.1-alpha.nupkg |
+| 5 | Test CLI locally | `dotnet tool install --global --add-source artifacts KoreForge.Scripts.Cli` → `koreforge-scripts list --connection "..." --application Test` |
 | 6 | Tag & push | `scr/git-push-nuget.ps1 -Version 0.0.1-alpha` |
 | 7 | Push to NuGet | `dotnet nuget push artifacts/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $KEY` |
 
@@ -249,18 +249,18 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | Default theme | `src/theme/default.css` | All CSS custom properties (--kf-*) as specified. Clean, neutral defaults. |
+| 1 | Default theme | `src/theme/default.css` | All CSS custom properties (--koreforge-*) as specified. Clean, neutral defaults. |
 | 2 | Dark theme | `src/theme/dark.css` | Dark mode overrides (inverted surfaces, adjusted accents). |
 
 ### Step 3.5 — Components
 
 | # | Task | File | Details |
 |---|------|------|---------|
-| 1 | KfScriptEditor | `src/components/KfScriptEditor.vue` | Monaco editor wrapper. Props: scriptId, scriptName, apiBaseUrl, language, height, readOnly, autoCompileMs, monacoOptions. Slots: toolbar, status, error. Emits: saved, compiled, error, dirty-change. Register JEX TextMate grammar. Keyboard shortcuts: Ctrl+S, Ctrl+Shift+B. |
-| 2 | KfHistoryViewer | `src/components/KfHistoryViewer.vue` | Timeline list of ScriptHistoryRecords. Operation badges (color-coded). Click to select → Monaco diff editor shows side-by-side. Rollback button per entry. |
-| 3 | KfRollbackDialog | `src/components/KfRollbackDialog.vue` | Modal overlay. Shows diff + metadata. Confirm/Cancel buttons. Loading state during rollback. |
-| 4 | KfScriptTester | `src/components/KfScriptTester.vue` | Two-panel layout. Left: Monaco JSON editor (input). Right: Monaco JSON read-only (output). Run button. Execution time. Error panel below. |
-| 5 | KfCompileStatus | `src/components/KfCompileStatus.vue` | Compact status bar. Green check / red error count / yellow warning count. Expandable error list. Emits goto-line events. |
+| 1 | KoreForgeScriptEditor | `src/components/KoreForgeScriptEditor.vue` | Monaco editor wrapper. Props: scriptId, scriptName, apiBaseUrl, language, height, readOnly, autoCompileMs, monacoOptions. Slots: toolbar, status, error. Emits: saved, compiled, error, dirty-change. Register JEX TextMate grammar. Keyboard shortcuts: Ctrl+S, Ctrl+Shift+B. |
+| 2 | KoreForgeHistoryViewer | `src/components/KoreForgeHistoryViewer.vue` | Timeline list of ScriptHistoryRecords. Operation badges (color-coded). Click to select → Monaco diff editor shows side-by-side. Rollback button per entry. |
+| 3 | KoreForgeRollbackDialog | `src/components/KoreForgeRollbackDialog.vue` | Modal overlay. Shows diff + metadata. Confirm/Cancel buttons. Loading state during rollback. |
+| 4 | KoreForgeScriptTester | `src/components/KoreForgeScriptTester.vue` | Two-panel layout. Left: Monaco JSON editor (input). Right: Monaco JSON read-only (output). Run button. Execution time. Error panel below. |
+| 5 | KoreForgeCompileStatus | `src/components/KoreForgeCompileStatus.vue` | Compact status bar. Green check / red error count / yellow warning count. Expandable error list. Emits goto-line events. |
 
 ### Step 3.6 — Package Entry Point
 
@@ -276,7 +276,7 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 | 2 | Composable tests | `src/__tests__/useScriptEditor.test.ts` | Load, dirty tracking, auto-compile debounce, save flow, reset. |
 | 3 | Composable tests | `src/__tests__/useScriptHistory.test.ts` | Load history, select version, rollback call. |
 | 4 | Composable tests | `src/__tests__/useScriptTester.test.ts` | Run with scriptId, run with content, invalid JSON rejection. |
-| 5 | Component tests | `src/__tests__/KfCompileStatus.test.ts` | Renders success, renders errors, emits goto-line. |
+| 5 | Component tests | `src/__tests__/KoreForgeCompileStatus.test.ts` | Renders success, renders errors, emits goto-line. |
 
 ### Step 3.8 — Build Scripts
 
@@ -295,7 +295,7 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 | 2 | Lint | `npm run lint` — clean |
 | 3 | Type check | `npm run typecheck` — no errors |
 | 4 | Build | `npm run build` — dist/ produced with .js, .cjs, .d.ts, .css |
-| 5 | Test local install | Create a throwaway Vue app, `npm install ../KoreForge.Vue.Scripts`, import and render `<KfScriptEditor>` |
+| 5 | Test local install | Create a throwaway Vue app, `npm install ../KoreForge.Vue.Scripts`, import and render `<KoreForgeScriptEditor>` |
 | 6 | Publish | `npm publish --access public` → @koreforge/vue-scripts@0.1.0 on npmjs.com |
 
 ---
@@ -341,9 +341,9 @@ Detailed step-by-step build plan for all 4 repositories, covering project scaffo
 |---|------|------|---------|
 | 1 | DashboardView | `src/views/DashboardView.vue` | Summary panels: function count, script count, live throughput, recent activity |
 | 2 | FunctionsView | `src/views/FunctionsView.vue` | Table of all functions. Sortable, filterable. Link to detail. |
-| 3 | FunctionDetailView | `src/views/FunctionDetailView.vue` | Function metadata + embedded KfScriptEditor for extract script + KfScriptTester |
+| 3 | FunctionDetailView | `src/views/FunctionDetailView.vue` | Function metadata + embedded KoreForgeScriptEditor for extract script + KoreForgeScriptTester |
 | 4 | ScriptsView | `src/views/ScriptsView.vue` | Table of all scripts. Filter by TypeTag. Link to detail. |
-| 5 | ScriptDetailView | `src/views/ScriptDetailView.vue` | Tabbed: Editor (KfScriptEditor), Test (KfScriptTester), History (KfHistoryViewer), Assignments |
+| 5 | ScriptDetailView | `src/views/ScriptDetailView.vue` | Tabbed: Editor (KoreForgeScriptEditor), Test (KoreForgeScriptTester), History (KoreForgeHistoryViewer), Assignments |
 | 6 | ShadowTestView | `src/views/ShadowTestView.vue` | Function selector → candidate editor → start/monitor shadow test → live results table → promote/discard |
 | 7 | SettingsView | `src/views/SettingsView.vue` | Structured sections: Kafka, Processing, Script Reload, Connection Strings |
 | 8 | MetricsView | `src/views/MetricsView.vue` | Real-time charts: throughput, latency, function breakdown, consumer lag |

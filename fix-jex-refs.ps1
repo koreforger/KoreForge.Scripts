@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
 $fixes = @(
-    @{ Repo = 'KF.Jex.Cli';          Tag = 'KF.Jex.Cli/v0.0.11-alpha';          Branch = 'main' },
-    @{ Repo = 'KF.Jex.LanguageServer'; Tag = 'KF.Jex.LanguageServer/v0.0.11-alpha'; Branch = 'main' }
+    @{ Repo = 'KoreForge.Jex.Cli';          Tag = 'KoreForge.Jex.Cli/v0.0.11-alpha';          Branch = 'main' },
+    @{ Repo = 'KoreForge.Jex.LanguageServer'; Tag = 'KoreForge.Jex.LanguageServer/v0.0.11-alpha'; Branch = 'main' }
 )
 
 foreach ($f in $fixes) {

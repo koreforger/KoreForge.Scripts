@@ -23,12 +23,12 @@ Both libraries share the same infrastructure patterns: SQL-backed storage, RowVe
 
 | Assembly | NuGet Package | Purpose |
 |----------|--------------|---------|
-| `KF.Scripts.Abstractions` | (bundled) | Interfaces, models, options, exceptions |
-| `KF.Scripts.Core` | (bundled) | `ScriptStore`, `ScriptHistoryService`, `ScriptChangeMonitor` |
-| `KF.Scripts.Data` | (bundled) | SQL Server implementation, migrations |
-| `KF.Scripts.AspNet` | (bundled) | ASP.NET Core endpoint mappings |
-| `KF.Scripts` | `KoreForge.Scripts` | Main bundler package (ships all above DLLs) |
-| `KF.Scripts.Cli` | `KoreForge.Scripts.Cli` | Dotnet tool: `kf-scripts` |
+| `KoreForge.Scripts.Abstractions` | (bundled) | Interfaces, models, options, exceptions |
+| `KoreForge.Scripts.Core` | (bundled) | `ScriptStore`, `ScriptHistoryService`, `ScriptChangeMonitor` |
+| `KoreForge.Scripts.Data` | (bundled) | SQL Server implementation, migrations |
+| `KoreForge.Scripts.AspNet` | (bundled) | ASP.NET Core endpoint mappings |
+| `KoreForge.Scripts` | `KoreForge.Scripts` | Main bundler package (ships all above DLLs) |
+| `KoreForge.Scripts.Cli` | `KoreForge.Scripts.Cli` | Dotnet tool: `koreforge-scripts` |
 
 All assemblies target `net10.0`.
 
@@ -108,7 +108,7 @@ CREATE INDEX IX_ScriptHistory_App_Name ON dbo.ScriptHistory(ApplicationId, Name,
 ### 4.1 Models
 
 ```csharp
-namespace KF.Scripts.Abstractions.Models;
+namespace KoreForge.Scripts.Abstractions.Models;
 
 public sealed record ScriptRecord
 {
@@ -158,7 +158,7 @@ public enum ScriptOperation
 ### 4.2 Options
 
 ```csharp
-namespace KF.Scripts.Abstractions;
+namespace KoreForge.Scripts.Abstractions;
 
 public sealed class ScriptStoreOptions
 {
@@ -179,7 +179,7 @@ public sealed class ScriptStoreOptions
 ### 4.3 Interfaces
 
 ```csharp
-namespace KF.Scripts.Abstractions.Interfaces;
+namespace KoreForge.Scripts.Abstractions.Interfaces;
 
 /// <summary>
 /// CRUD operations for scripts with mandatory pre-save validation.
@@ -415,7 +415,7 @@ Applications subscribe to `ScriptsChanged` to trigger recompilation and hot-swap
 
 Implements `IScriptValidator`. Resolves the correct `IScriptCompiler` by language and delegates to it. This is the "compile check without saving" path used by the UI.
 
-## 6. ASP.NET Core Integration (KF.Scripts.AspNet)
+## 6. ASP.NET Core Integration (KoreForge.Scripts.AspNet)
 
 ### 6.1 Endpoint Mappings
 
@@ -446,7 +446,7 @@ public static class ScriptEndpoints
 
 ### 6.2 Test Endpoint
 
-`POST /api/scripts/{id}/test` accepts a script ID (or inline content) plus a JSON input payload. It compiles the script, runs it against the input, and returns the output. This is the backend for the `<KfScriptTester>` component.
+`POST /api/scripts/{id}/test` accepts a script ID (or inline content) plus a JSON input payload. It compiles the script, runs it against the input, and returns the output. This is the backend for the `<KoreForgeScriptTester>` component.
 
 **Request:**
 ```json
@@ -496,7 +496,7 @@ public static IServiceCollection AddScriptCompiler<TCompiler>(
 }
 ```
 
-## 7. CLI Tool (KF.Scripts.Cli)
+## 7. CLI Tool (KoreForge.Scripts.Cli)
 
 Packaged as a .NET tool: `dotnet tool install -g KoreForge.Scripts.Cli`
 
@@ -504,17 +504,17 @@ Packaged as a .NET tool: `dotnet tool install -g KoreForge.Scripts.Cli`
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `list` | `kf-scripts list [--type extract] [--enabled]` | List all scripts, optionally filtered |
-| `get` | `kf-scripts get <id>` | Display script metadata as JSON |
-| `download` | `kf-scripts download <name> [--output file.jex]` | Download script content to file or stdout |
-| `upload` | `kf-scripts upload <name> --file script.jex --type extract [--comment "..."]` | Upload/update script with validation |
-| `create` | `kf-scripts create <name> --file script.jex --type extract [--description "..."]` | Create new script |
-| `delete` | `kf-scripts delete <id> --rowversion <hex>` | Delete script with concurrency check |
-| `history` | `kf-scripts history <name>` | Show version history |
-| `rollback` | `kf-scripts rollback <name> <versionIndex>` | Rollback to previous version |
-| `validate` | `kf-scripts validate --file script.jex [--language jex]` | Compile-check without saving |
-| `export` | `kf-scripts export --output scripts.json [--type extract]` | Export scripts to JSON |
-| `import` | `kf-scripts import --file scripts.json [--apply] [--upsert]` | Import scripts from JSON |
+| `list` | `koreforge-scripts list [--type extract] [--enabled]` | List all scripts, optionally filtered |
+| `get` | `koreforge-scripts get <id>` | Display script metadata as JSON |
+| `download` | `koreforge-scripts download <name> [--output file.jex]` | Download script content to file or stdout |
+| `upload` | `koreforge-scripts upload <name> --file script.jex --type extract [--comment "..."]` | Upload/update script with validation |
+| `create` | `koreforge-scripts create <name> --file script.jex --type extract [--description "..."]` | Create new script |
+| `delete` | `koreforge-scripts delete <id> --rowversion <hex>` | Delete script with concurrency check |
+| `history` | `koreforge-scripts history <name>` | Show version history |
+| `rollback` | `koreforge-scripts rollback <name> <versionIndex>` | Rollback to previous version |
+| `validate` | `koreforge-scripts validate --file script.jex [--language jex]` | Compile-check without saving |
+| `export` | `koreforge-scripts export --output scripts.json [--type extract]` | Export scripts to JSON |
+| `import` | `koreforge-scripts import --file scripts.json [--apply] [--upsert]` | Import scripts from JSON |
 
 ### 7.2 Global Options
 
@@ -527,7 +527,7 @@ Packaged as a .NET tool: `dotnet tool install -g KoreForge.Scripts.Cli`
 ### 7.3 Upload Workflow
 
 ```
-$ kf-scripts upload extract-login --file login-extract.jex --type extract --comment "Added fallback for sessionId casing"
+$ koreforge-scripts upload extract-login --file login-extract.jex --type extract --comment "Added fallback for sessionId casing"
 
 Validating login-extract.jex... ✓ compiled successfully
 Uploading to 'extract-login' (KafkaProcessor)...
@@ -538,7 +538,7 @@ Done.
 
 ## 8. Testing Strategy
 
-### 8.1 Unit Tests (KF.Scripts.Tests)
+### 8.1 Unit Tests (KoreForge.Scripts.Tests)
 
 - **ScriptStore tests** — CRUD operations, validation enforcement, concurrency conflicts
 - **ScriptHistoryService tests** — history retrieval, rollback mechanics, conflict detection

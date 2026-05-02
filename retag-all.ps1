@@ -1,7 +1,7 @@
 $root='C:\My\KoreForge'
 $ver='v0.0.11-alpha'
 $repos = @(
-    'KF.Jex.Cli','KF.Jex.LanguageServer',
+    'KoreForge.Jex.Cli','KoreForge.Jex.LanguageServer',
     'KoreForge.AppLifecycle','KoreForge.Data','KoreForge.Jex',
     'KoreForge.Json','KoreForge.Kafka','KoreForge.Logging','KoreForge.Logging.Serilog',
     'KoreForge.Metrics','KoreForge.Metrics.AspNet','KoreForge.OData','KoreForge.Processing',

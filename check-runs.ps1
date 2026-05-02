@@ -1,4 +1,4 @@
-$repos = @('KF.Jex.Cli','KF.Jex.LanguageServer','KoreForge.AppLifecycle','KoreForge.Data','KoreForge.Jex','KoreForge.Json','KoreForge.Kafka','KoreForge.Logging','KoreForge.Logging.Serilog','KoreForge.Metrics','KoreForge.Metrics.AspNet','KoreForge.OData','KoreForge.Processing','KoreForge.Scripts','KoreForge.Settings','KoreForge.Templates','KoreForge.Time','KoreForge.Web')
+$repos = @('KoreForge.Jex.Cli','KoreForge.Jex.LanguageServer','KoreForge.AppLifecycle','KoreForge.Data','KoreForge.Jex','KoreForge.Json','KoreForge.Kafka','KoreForge.Logging','KoreForge.Logging.Serilog','KoreForge.Metrics','KoreForge.Metrics.AspNet','KoreForge.OData','KoreForge.Processing','KoreForge.Scripts','KoreForge.Settings','KoreForge.Templates','KoreForge.Time','KoreForge.Web')
 foreach ($r in $repos) {
     $run = gh run list --repo "koreforger/$r" --limit 1 --json name,status,conclusion,headBranch,createdAt 2>$null | ConvertFrom-Json
     if ($run) {

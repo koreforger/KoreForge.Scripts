@@ -54,8 +54,8 @@ Four projects work together to deliver this capability:
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────────┐│
 │  │                  @koreforge/vue-scripts                      ││
-│  │  KfScriptEditor │ KfHistoryViewer │ KfScriptTester          ││
-│  │  KfRollbackDialog │ KfCompileStatus                         ││
+│  │  KoreForgeScriptEditor │ KoreForgeHistoryViewer │ KoreForgeScriptTester          ││
+│  │  KoreForgeRollbackDialog │ KoreForgeCompileStatus                         ││
 │  │  useScriptEditor │ useScriptHistory │ useSignalRStream      ││
 │  └─────────────────────────────────────────────────────────────┘│
 │                                                                 │
@@ -101,7 +101,7 @@ Developer's Machine                    Server
    → see output
 
 3. Upload:                          4. KoreForge.Scripts receives:
-   kf-scripts upload                   - Validates name/type/language
+   koreforge-scripts upload                   - Validates name/type/language
      extract-login                     - Compiles via IScriptCompiler
      --file extract-login.jex          - If fails → 400 + diagnostics
      --type extract                    - If passes → INSERT Scripts
@@ -257,7 +257,7 @@ KafkaProcessor (ASP.NET Core)
 ### Dependency Rules
 
 - KoreForge.Scripts does **not** depend on KoreForge.Jex. The compilation bridge is in the application.
-- KF.Vue.Scripts does **not** depend on the KafkaProcessor backend. It works with any KoreForge.Scripts backend.
+- KoreForge.Vue.Scripts does **not** depend on the KafkaProcessor backend. It works with any KoreForge.Scripts backend.
 - The Dashboard does **not** depend on DevExtreme or any paid UI library.
 
 ## 7. Technology Stack
@@ -283,13 +283,13 @@ The projects have clear dependencies that dictate build order:
 ### Phase 1: KoreForge.Scripts Library
 **No dependencies on other new projects.**
 
-1. KF.Scripts.Abstractions — Models, interfaces, options, exceptions
-2. KF.Scripts.Data — SQL implementation (Scripts + ScriptHistory tables)
-3. KF.Scripts.Core — ScriptStore, ScriptHistoryService, ScriptChangeMonitor, ScriptValidator
-4. KF.Scripts.AspNet — Endpoint mappings, request/response DTOs
-5. KF.Scripts — Bundler package
-6. KF.Scripts.Cli — CLI tool
-7. KF.Scripts.Tests — Unit tests (target: 70%+ coverage)
+1. KoreForge.Scripts.Abstractions — Models, interfaces, options, exceptions
+2. KoreForge.Scripts.Data — SQL implementation (Scripts + ScriptHistory tables)
+3. KoreForge.Scripts.Core — ScriptStore, ScriptHistoryService, ScriptChangeMonitor, ScriptValidator
+4. KoreForge.Scripts.AspNet — Endpoint mappings, request/response DTOs
+5. KoreForge.Scripts — Bundler package
+6. KoreForge.Scripts.Cli — CLI tool
+7. KoreForge.Scripts.Tests — Unit tests (target: 70%+ coverage)
 
 **Deliverable:** Working NuGet package with CLI, tested against SQL Server.
 
@@ -308,7 +308,7 @@ The projects have clear dependencies that dictate build order:
 
 **Deliverable:** KafkaProcessor running with database-backed scripts, hot-reload working.
 
-### Phase 3: KF.Vue.Scripts Component Library
+### Phase 3: KoreForge.Vue.Scripts Component Library
 **No backend dependency (works against any KoreForge.Scripts API).**
 
 1. Project scaffolding — Vite library mode, TypeScript, ESLint
@@ -318,11 +318,11 @@ The projects have clear dependencies that dictate build order:
 5. useScriptHistory composable — History, diff, rollback
 6. useScriptTester composable — Test execution
 7. useSignalRStream composable — SignalR connection management
-8. KfScriptEditor component — Monaco integration, toolbar, status
-9. KfHistoryViewer component — Timeline, diff viewer
-10. KfRollbackDialog component — Confirmation dialog
-11. KfScriptTester component — Side-by-side input/output
-12. KfCompileStatus component — Error/warning display
+8. KoreForgeScriptEditor component — Monaco integration, toolbar, status
+9. KoreForgeHistoryViewer component — Timeline, diff viewer
+10. KoreForgeRollbackDialog component — Confirmation dialog
+11. KoreForgeScriptTester component — Side-by-side input/output
+12. KoreForgeCompileStatus component — Error/warning display
 13. Default theme CSS
 14. Package build and publish
 
@@ -335,7 +335,7 @@ The projects have clear dependencies that dictate build order:
 2. Application layout — Sidebar navigation, connection status
 3. DashboardView — Overview panels
 4. FunctionsView + FunctionDetailView — Function management
-5. ScriptsView + ScriptDetailView — Script management (uses KF.Vue.Scripts)
+5. ScriptsView + ScriptDetailView — Script management (uses KoreForge.Vue.Scripts)
 6. SettingsView — Application-aware settings forms
 7. MetricsView — Real-time charts (SignalR)
 8. ShadowTestView — Shadow testing (SignalR streaming)
@@ -348,10 +348,10 @@ The projects have clear dependencies that dictate build order:
 
 1. Open `extract-login.jex` in VS Code, edit with full language server support
 2. Test locally: `jex extract-login.jex --input sample.json`
-3. Upload: `kf-scripts upload extract-login --file extract-login.jex --comment "Fixed amount casing"`
+3. Upload: `koreforge-scripts upload extract-login --file extract-login.jex --comment "Fixed amount casing"`
 4. Script compiles successfully on the server, old version archived
 5. Within 30 seconds, KafkaProcessor hot-reloads the new script
-6. If something is wrong: `kf-scripts rollback extract-login 0` — instant rollback
+6. If something is wrong: `koreforge-scripts rollback extract-login 0` — instant rollback
 
 ### For an operator using the dashboard:
 
@@ -368,7 +368,7 @@ The projects have clear dependencies that dictate build order:
 
 1. Create function definition via dashboard (name, regex, group)
 2. Write extraction script in VS Code with language server
-3. Upload script: `kf-scripts create extract-new-function --file new.jex --type extract`
+3. Upload script: `koreforge-scripts create extract-new-function --file new.jex --type extract`
 4. Assign script to function via dashboard: Functions → New Function → Assign Script
 5. Function starts processing matching messages with the new script
 
@@ -424,15 +424,15 @@ KoreForge/                                       (workspace root)
 │   ├── LICENSE.md
 │   ├── README.md
 │   ├── src/
-│   │   ├── KF.Scripts/                          [Bundler package]
-│   │   ├── KF.Scripts.Abstractions/             [Interfaces, models]
-│   │   ├── KF.Scripts.Core/                     [Services]
-│   │   ├── KF.Scripts.Data/                     [SQL implementation]
-│   │   ├── KF.Scripts.AspNet/                   [ASP.NET endpoints]
-│   │   └── KF.Scripts.Cli/                      [CLI tool]
+│   │   ├── KoreForge.Scripts/                          [Bundler package]
+│   │   ├── KoreForge.Scripts.Abstractions/             [Interfaces, models]
+│   │   ├── KoreForge.Scripts.Core/                     [Services]
+│   │   ├── KoreForge.Scripts.Data/                     [SQL implementation]
+│   │   ├── KoreForge.Scripts.AspNet/                   [ASP.NET endpoints]
+│   │   └── KoreForge.Scripts.Cli/                      [CLI tool]
 │   ├── tst/
-│   │   ├── KF.Scripts.Tests/
-│   │   └── KF.Scripts.Benchmarks/
+│   │   ├── KoreForge.Scripts.Tests/
+│   │   └── KoreForge.Scripts.Benchmarks/
 │   ├── scr/                                     [Build/test/publish scripts]
 │   ├── doc/
 │   │   ├── Specification.md                     [Library spec]

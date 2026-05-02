@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Multi-DLL Bundling Pattern: TargetsForTfmSpecificBuildOutput
+
+    This package bundles KoreForge.Scripts.Abstractions, KoreForge.Scripts.Core, KoreForge.Scripts.Data,
+    and KoreForge.Scripts.AspNet into a single NuGet package (KoreForge.Scripts).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>KoreForge.Scripts</PackageId>
+    <AssemblyName>KoreForge.Scripts</AssemblyName>
+    <RootNamespace>KoreForge.Scripts</RootNamespace>
+    <Description>KoreForge versioned script registry — SQL Server-backed script store with history, rollback, validation, change monitoring, and ASP.NET endpoints.</Description>
+    <PackageTags>scripts;registry;versioned;multi-app;sql-server;rollback</PackageTags>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);_IncludeScriptsAssemblies</TargetsForTfmSpecificBuildOutput>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <Target Name="_IncludeScriptsAssemblies" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <_ScriptsAssemblies Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.ReferenceSourceTarget)' == 'ProjectReference' and (           '%(ReferenceCopyLocalPaths.FileName)' == 'KoreForge.Scripts.Abstractions' or           '%(ReferenceCopyLocalPaths.FileName)' == 'KoreForge.Scripts.Core' or           '%(ReferenceCopyLocalPaths.FileName)' == 'KoreForge.Scripts.Data' or           '%(ReferenceCopyLocalPaths.FileName)' == 'KoreForge.Scripts.AspNet')" />
+      <TfmSpecificPackageFile Include="@(_ScriptsAssemblies)">
+        <PackagePath>lib\$(TargetFramework)\</PackagePath>
+        <BuildOutputInPackage>true</BuildOutputInPackage>
+      </TfmSpecificPackageFile>
+    </ItemGroup>
+  </Target>
+  <ItemGroup>
+    <PackageReference Include="KoreForge.Scripts.Abstractions" VersionOverride="1.0.2-alpha" PrivateAssets="all" />
+    <PackageReference Include="KoreForge.Scripts.Core" VersionOverride="1.0.2-alpha" PrivateAssets="all" />
+    <PackageReference Include="KoreForge.Scripts.Data" VersionOverride="1.0.2-alpha" PrivateAssets="all" />
+    <PackageReference Include="KoreForge.Scripts.AspNet" VersionOverride="1.0.2-alpha" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>KoreForge.Scripts.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+</Project>

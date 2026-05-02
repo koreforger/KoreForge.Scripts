@@ -1,6 +1,6 @@
 $root='C:\My\KoreForge'
 $ver='v0.0.11-alpha'
-$repos = @('KF.Jex.Cli','KF.Jex.LanguageServer','KoreForge.Settings')
+$repos = @('KoreForge.Jex.Cli','KoreForge.Jex.LanguageServer','KoreForge.Settings')
 foreach ($repo in $repos) {
     $path = "$root\$repo"
     $tag  = "$repo/$ver"

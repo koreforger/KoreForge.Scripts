@@ -1,5 +1,5 @@
 $repos = @(
-    'KF.Jex.Cli','KF.Jex.LanguageServer',
+    'KoreForge.Jex.Cli','KoreForge.Jex.LanguageServer',
     'KoreForge.AppLifecycle','KoreForge.Jex','KoreForge.Metrics','KoreForge.Metrics.AspNet',
     'KoreForge.Scripts','KoreForge.Settings','KoreForge.Templates','KoreForge.Time','KoreForge.Web'
 )
